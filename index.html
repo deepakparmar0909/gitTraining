@@ -293,6 +293,14 @@
       <button type="submit" class="btn btn-wa block">💬 Place Order on WhatsApp</button>
       <p class="tiny">Your order opens in WhatsApp — just press <b>Send</b>. The shop will confirm it shortly.</p>
     </form>
+    <div class="modal-card done-card" id="orderDone" hidden>
+      <div class="done-icon">🙏</div>
+      <h3>Your order is ready</h3>
+      <p>Tap the button below to send it to the shop on WhatsApp. The shop will call or message you to confirm.</p>
+      <p class="done-no">Order No: <b id="orderNo"></b></p>
+      <a class="btn btn-wa block" id="sendOrder" target="_blank" rel="noopener">💬 Send Order on WhatsApp</a>
+      <button type="button" class="btn btn-ghost block" id="doneClose">Back to shop</button>
+    </div>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

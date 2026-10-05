@@ -206,9 +206,9 @@
   }
 
   $("#checkoutBtn").addEventListener("click", () => { closeCart(); renderSummary(); modal.hidden = false; form.name.focus(); });
-  $("#closeCheckout").addEventListener("click", () => { modal.hidden = true; });
-  modal.addEventListener("click", (e) => { if (e.target === modal) modal.hidden = true; });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { modal.hidden = true; closeCart(); } });
+  $("#closeCheckout").addEventListener("click", () => closeDone());
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeDone(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeDone(); closeCart(); } });
 
   form.addEventListener("change", (e) => {
     if (e.target.name === "mode") {
@@ -250,17 +250,22 @@
       `🕘 Time: ${d.slot}\n` +
       `💳 Payment: ${d.pay}\n` +
       (d.note.trim() ? `📝 Note: ${d.note.trim()}\n` : "");
-    if (d.pay === "UPI" && SHOP.upiId) {
-      msg += `\nUPI payment to: ${SHOP.upiId}`;
-      const upi = `upi://pay?pa=${encodeURIComponent(SHOP.upiId)}&pn=${encodeURIComponent(SHOP.name)}&am=${t.total}&cu=INR&tn=${orderNo}`;
-      if (/Android|iPhone/i.test(navigator.userAgent)) setTimeout(() => { location.href = upi; }, 1500);
-    }
+    if (d.pay === "UPI" && SHOP.upiId) msg += `\nUPI payment to: ${SHOP.upiId}`;
 
-    window.open(waLink(msg), "_blank");
+    // Show a "Send on WhatsApp" button (a real link works everywhere; pop-ups are often blocked)
+    $("#orderNo").textContent = orderNo;
+    $("#sendOrder").href = waLink(msg);
+    form.hidden = true;
+    $("#orderDone").hidden = false;
+  });
+
+  $("#sendOrder").addEventListener("click", () => {
     cart = {}; save(); refreshAll();
-    modal.hidden = true;
+    setTimeout(closeDone, 300);
     toast("🙏 Thank you! Please press Send in WhatsApp to confirm your order.", 5000);
   });
+  function closeDone() { modal.hidden = true; form.hidden = false; $("#orderDone").hidden = true; }
+  $("#doneClose").addEventListener("click", closeDone);
 
   // ---------- Toast ----------
   let toastTimer;

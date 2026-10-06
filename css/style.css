@@ -244,6 +244,10 @@ button { cursor: pointer; border: 0; background: none; }
 .card[data-cat="pooja"] .card-img, .card[data-cat="kits"] .card-img {
   background: radial-gradient(circle at 50% 60%, #fff6e3 0 25%, #ffd9a0 75%);
 }
+.card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card:hover .card-img img { transform: scale(1.05); }
+.card-img img { transition: transform .3s; }
+.card-img { overflow: hidden; }
 .badge {
   position: absolute; top: 10px; left: 10px;
   background: var(--green); color: #fff; font-size: 11px; font-weight: 600;
@@ -353,6 +357,8 @@ button { cursor: pointer; border: 0; background: none; }
   width: 52px; height: 52px; flex: none; border-radius: 12px; font-size: 28px;
   display: grid; place-items: center; background: var(--cream-2);
 }
+.cart-item .ci-img { overflow: hidden; }
+.cart-item .ci-img img { width: 100%; height: 100%; object-fit: cover; }
 .cart-item .ci-info { flex: 1; min-width: 0; }
 .cart-item .ci-info b { display: block; font-size: 14px; font-weight: 600; line-height: 1.3; }
 .cart-item .ci-info small { color: var(--muted); }

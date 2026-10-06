@@ -6,6 +6,9 @@
   const rupee = (n) => "₹" + n.toLocaleString("en-IN");
   const byId = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
   const waLink = (text) => `https://wa.me/${SHOP.whatsapp}?text=${encodeURIComponent(text)}`;
+  const thumb = (p) => p.img
+    ? `<img src="${p.img}" alt="${esc(p.name)}" loading="lazy" data-icon="${p.icon}" />`
+    : p.icon;
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   // ---------- Cart state (saved in the browser) ----------
@@ -34,6 +37,12 @@
     const delivery = items === 0 || pickup || sub >= SHOP.freeDeliveryAbove ? 0 : SHOP.deliveryCharge;
     return { items, sub, mrp, saved: mrp - sub, delivery, total: sub + delivery };
   }
+
+  // Missing product photo -> show the icon instead
+  document.addEventListener("error", (e) => {
+    const img = e.target;
+    if (img.tagName === "IMG" && img.dataset.icon) img.replaceWith(document.createTextNode(img.dataset.icon));
+  }, true);
 
   // ---------- Shop info into the page ----------
   $$("[data-shop]").forEach((el) => { el.textContent = SHOP[el.dataset.shop]; });
@@ -76,7 +85,7 @@
       <article class="card" data-cat="${p.cat}" data-id="${p.id}">
         ${off ? `<span class="badge">${off}% OFF</span>` : ""}
         ${p.tag ? `<span class="tag">${esc(p.tag)}</span>` : ""}
-        <div class="card-img">${p.icon}</div>
+        <div class="card-img">${thumb(p)}</div>
         <div class="card-body">
           <h3>${esc(p.name)}</h3>
           <span class="hi">${esc(p.hi)}</span>
@@ -156,7 +165,7 @@
           const p = byId[id], q = cart[id];
           return `
             <div class="cart-item">
-              <div class="ci-img">${p.icon}</div>
+              <div class="ci-img">${thumb(p)}</div>
               <div class="ci-info"><b>${esc(p.name)}</b><small>${esc(p.unit)} · ${rupee(p.price)}</small></div>
               <div class="qty"><button data-dec="${id}" aria-label="Decrease">−</button><span>${q}</span><button data-inc="${id}" aria-label="Increase">+</button></div>
               <div class="ci-price">${rupee(p.price * q)}</div>
